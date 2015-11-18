@@ -13,6 +13,7 @@ use Replication\DB\TableInfo;
 use Replication\Logger;
 use \PDO;
 use \ErrorException;
+use PDOStatement;
 
 class Synchronizer extends Hasher {
     protected $masterdb;
