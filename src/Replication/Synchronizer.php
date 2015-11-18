@@ -24,9 +24,10 @@ class Synchronizer extends Hasher {
             $syncher = new Synchronizer($dbconfig, $config->general);
             $syncher->masterdb=$masterDB;
             $syncher->timeStart = microtime(true);
+            $syncher->dryrun = $config->dryrun;
             $hashers[]=$syncher;   
         }
-        $this->dryrun = $config->dryrun;
+        
         return $hashers;
     } 
     
