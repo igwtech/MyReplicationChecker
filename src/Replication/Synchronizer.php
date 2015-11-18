@@ -216,7 +216,7 @@ class Synchronizer extends Hasher {
                 $this->stmtCopy['read']->execute(array($keyname=>$entry['index']));
                 $row = $this->stmtCopy['read']->fetch(PDO::FETCH_ASSOC);
                 
-                    Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtCopy['write']->queryString . " ". var_export($row,true));
+                Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtCopy['write']->queryString . " ". var_export($row,true));
                 if(!$this->dryrun) {
                 // if($row !== false ) $this->stmtCopy['write']->execute($row);
                 }
@@ -227,28 +227,30 @@ class Synchronizer extends Hasher {
                 // $this->stmtDelete->execute(array($keyname=>$entry['index']));
                 }
             }
-	    $this->masterdb->query('SELECT 1'); // pingmaster
-			gc_collect_cycles();
+	    $this->masterdb->query('SELECT 1'); // ping master to keep connection alive
+            gc_collect_cycles();
         }
         unset($diff);
+        unset($listMaster);
+        unser($listSlave);
     }
    
     /**
 	* Runs the OS diff tool between the temporary files to get the different rows.
 	**/ 
     public function calculateDiff($master,$slave) {
-        exec("diff $slave $master",$output,$ret);
-        foreach($output as $i=>$v) {
-            if(preg_match('/^(?<change>[><]) (?<pk>[0-9]+)/', $v,$m)) {
-                if($m['change']==='>'){
-                    $output[$i] = array('action'=>'INSERT','index'=> $m['pk']);
-                }else{
-                    $output[$i] = array('action'=>'DELETE','index'=> $m['pk']);
-                }
-            }else{
-                unset($output[$i]);
+        $output=array();
+        foreach($slave as $key =>$hash) {
+            if(!isset($master[$key])) {
+                $output[]=array('action'=>'DELETE','index'=> $key); //REMOVE
             }
         }
+        foreach ($master as $key=>$hash) {
+            if(!isset($slave[$key]) || ($slave[$key] !== $hash)) {
+                $output[] = array('action'=>'INSERT','index'=> $key); //UPDATE/INSERT
+            }
+        }
+        
         return $output;
     }
     /**
@@ -279,16 +281,12 @@ class Synchronizer extends Hasher {
             Logger::error($e);
             die();
         }
-        $tmp = tempnam('/tmp/','sync');
-        if(FALSE === ($fd=fopen($tmp,'w+'))) {
-            Logger::error('Unable to open temporal file');
-            die();
-        }
+        $tmp=array();
         while (false !== ($row = $hasher->fetch(PDO::FETCH_NUM))) {
-            fwrite($fd, implode("\t",$row)."\n");
+            list($key,$value)=$row;
+            $tmp[$key]=$value;
 	    gc_collect_cycles();
         }
-        fclose($fd);
         $stop = microtime(true);
         $chunk_time = ($stop - $start);
         Logger::profiling('List retrieved in:'.$chunk_time);
