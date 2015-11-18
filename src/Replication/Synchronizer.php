@@ -234,7 +234,7 @@ class Synchronizer extends Hasher {
         }
         unset($diff);
         unset($listMaster);
-        unser($listSlave);
+        unset($listSlave);
     }
    
     /**
