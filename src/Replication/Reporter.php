@@ -47,7 +47,12 @@
 
 
 namespace Replication;
+use Replication\DB\MySQL\DatabaseAdapter;
+use Replication\DB\TableInfo;
 use Replication\Logger;
+use \PDO;
+use \ErrorException;
+
 /**
  * Compares hashes and generates email reports
  */

@@ -8,6 +8,7 @@
 
 namespace Replication\DB\MySQL;
 use Replication\Logger;
+use Replication\DB\TableInfo;
 use PDO;
 
 class DatabaseAdapter {

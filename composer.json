@@ -2,8 +2,8 @@
     "name": "greicodex/my-replication-checker",
     "description": "Tool to check and synchronize replications",
     "require": {
-        "symfony/process": "^2.7",
-        "symfony/finder": "^2.7"
+        "symfony/process": "^2.6",
+        "symfony/finder": "^2.6"
     },
     "require-dev": {
     },

@@ -46,9 +46,12 @@
  */
 
 namespace Replication;
-use Replication\DB\TableInfo;
 use Replication\DB\MySQL\DatabaseAdapter;
+use Replication\DB\TableInfo;
 use Replication\Logger;
+use \PDO;
+use \ErrorException;
+
 /**
  * Main Replication Check class
  */
@@ -103,7 +106,7 @@ class Indexer {
      */
     function logQuery($sql) {
         if (false === ($fd_queries = fopen($this->query_log, 'a+'))) {
-            throw new ErrorException('Unable to open ' . $this->query_log);
+            throw new \ErrorException('Unable to open ' . $this->query_log);
         }
         // Log Query for debugging and performance purposes
         if ($fd_queries) {
@@ -121,7 +124,7 @@ class Indexer {
         $arr_bound = array();
         Logger::notice('Loading Boundaries...');
         $this->db->stmt_boundaries->execute(array('dbase' => $table->TABLE_SCHEMA, 'table' => $table->TABLE_NAME));
-        if (false === ($arr_bound = $this->db->stmt_boundaries->fetchAll(PDO::FETCH_ASSOC))) {
+        if (false === ($arr_bound = $this->db->stmt_boundaries->fetchAll(\PDO::FETCH_ASSOC))) {
             Logger::error('Unable to load table boundaries');
         }
         return $arr_bound;
@@ -147,7 +150,7 @@ class Indexer {
         }
         if ($arr_bound === false) {
             Logger::error('Fatal error occurred getting SQL Bounds');
-            throw new ErrorException('Fatal error occurred getting SQL Bounds');
+            throw new \ErrorException('Fatal error occurred getting SQL Bounds');
         }
         return $arr_bound;
     }
@@ -192,7 +195,7 @@ class Indexer {
             } elseif (!$db->isReady() && $bound['index'] == 'LIMIT') {
                 $db->prepareChecksumChunkLimit($table_name, $cols, $keys);
             } else {
-                throw new ErrorException("Unknown Index");
+                throw new \ErrorException("Unknown Index");
             }
         }
         return $arr_bound;
@@ -255,12 +258,12 @@ class Indexer {
         $params = array(':primary_key' => $quoted_keys, ':table_name' => $table_name);
         $stmt = $this->db->prepare("SELECT MAX(x) as `upper` FROM ( SELECT :primary_key as x FROM :table_name WHERE :primary_key >= :start ORDER BY :primary_key LIMIT 0,:stop) t;", $params);
         if ($stmt === false) {
-            throw new ErrorException('Unable to prepare statement');
+            throw new \ErrorException('Unable to prepare statement');
         }
         $this->logQuery($stmt->queryString);
         $stmt_limits = $this->db->query("SELECT MIN(:primary_key) as `start_pk`,MAX(:primary_key) as `end_pk` FROM :table_name ", $params);
         if (FALSE === ($limits = $stmt_limits->fetch())) {
-            throw new ErrorException("Unable to get PK limits");
+            throw new \ErrorException("Unable to get PK limits");
         }
         $last_upper = 0;
         if (count($bounds)) {
@@ -272,10 +275,10 @@ class Indexer {
         while ( $last_upper < $limits['end_pk']) {
             Logger::debug('Scaning PK(' . $quoted_keys . ') from ' . $last_upper . ' of ' . $limits['end_pk']);
             // Note: this works good with auto_increment Primary Keys
-            $stmt->bindValue(':start', $last_upper, PDO::PARAM_INT);
-            $stmt->bindValue(':stop', $page_size, PDO::PARAM_INT);
+            $stmt->bindValue(':start', $last_upper, \PDO::PARAM_INT);
+            $stmt->bindValue(':stop', $page_size, \PDO::PARAM_INT);
             $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             if (false === $row) {
                 Logger::error('Unable to get bounds for ' . $last_upper . ':' . $page_size . ' on table ' . $table_name . ' -- ' . $sql);
                 $err = $stmt->errorInfo();

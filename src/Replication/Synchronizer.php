@@ -8,6 +8,11 @@
 
 namespace Replication;
 use Replication\Hasher;
+use Replication\DB\MySQL\DatabaseAdapter;
+use Replication\DB\TableInfo;
+use Replication\Logger;
+use \PDO;
+use \ErrorException;
 
 class Synchronizer extends Hasher {
     protected $masterdb;

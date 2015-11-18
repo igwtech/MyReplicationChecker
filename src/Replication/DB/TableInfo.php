@@ -81,7 +81,7 @@ class TableInfo {
      */
     public static function getTables(DatabaseAdapter $dbh, $dbname) {
         if ($dbh->schema_tables->execute(array("schema" => $dbname))) {
-            if (false !== ($rows = $dbh->schema_tables->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, __CLASS__, array($dbh)))) {
+            if (false !== ($rows = $dbh->schema_tables->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, __CLASS__, array($dbh)))) {
                 return $rows;
             }
         }
@@ -93,7 +93,7 @@ class TableInfo {
             if (!$this->db->table_columns->execute(array("schema" => $this->TABLE_SCHEMA, 'table' => $this->TABLE_NAME))) {
                 return false;
             }
-            if (false === ($this->TABLE_COLUMNS = $this->db->table_columns->fetchAll(PDO::FETCH_ASSOC))) {
+            if (false === ($this->TABLE_COLUMNS = $this->db->table_columns->fetchAll(\PDO::FETCH_ASSOC))) {
                 return false;
             }
         }

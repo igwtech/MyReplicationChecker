@@ -102,20 +102,20 @@ class OptionParser {
      * @param string $help
      */
     function addRule($optdesc,$help=null) {
-        $short_regex = '(?<short>[A-Za-z0-9])';
-        $long_regex='(?<long>[A-Za-z0-9_-]{2,})';
+        $short_regex = '(?P<short>[A-Za-z0-9])';
+        $long_regex='(?P<long>[A-Za-z0-9_-]{2,})';
         $matches=array();
-        if(preg_match("/^$short_regex(?<mode>[:]{0,2})$/", $optdesc,$matches)){
+        if(preg_match("/^$short_regex(?P<mode>[:]{0,2})$/", $optdesc,$matches)){
             $this->validOpts[$matches['short']]=  OptionParser::GETOPT_SHORT;
             $this->setRuleOptions($matches['short'], $matches['mode']);
-        }elseif(preg_match("/^(:?$short_regex\|$long_regex)(?<mode>[:]{0,2})$/", $optdesc,$matches)) {
+        }elseif(preg_match("/^(:?$short_regex\|$long_regex)(?P<mode>[:]{0,2})$/", $optdesc,$matches)) {
             $this->validOpts[$matches['short']]=  OptionParser::GETOPT_SHORT;
             $this->setRuleOptions($matches['short'], $matches['mode']);
             $this->pairedOpts[$matches['short']]=$matches[1];
             $this->validOpts[$matches['long']]=  OptionParser::GETOPT_LONG;
             $this->setRuleOptions($matches['long'], $matches['mode']);
             $this->pairedOpts[$matches['long']]=$matches[1];
-        }elseif(preg_match("/^$long_regex(?<mode>[:]{0,2})$/", $optdesc,$matches)) {
+        }elseif(preg_match("/^$long_regex(?P<mode>[:]{0,2})$/", $optdesc,$matches)) {
             $this->validOpts[$matches['long']]=  OptionParser::GETOPT_LONG;
             $this->setRuleOptions($matches['long'], $matches['mode']);
             $this->pairedOpts[$matches['long']]=$matches[1];
