@@ -63,6 +63,8 @@ EOT;
     const SQL_RESET_CHECKSUMS = "UPDATE `:CHECKSUM_DATABASE`.`:CHECKSUM_TABLE` SET `master_crc`=null,`master_cnt`=null ";
     const SQL_REPORT = "SELECT * FROM `:CHECKSUM_DATABASE`.`:CHECKSUM_TABLE` WHERE `master_crc` <> '' AND `master_crc` IS NOT NULL AND ( `this_crc` <> `master_crc` OR `this_cnt` <> `master_cnt`)";
 
+    protected $server;
+    
     public function __construct($checksumdb, $checksumtable) {
         $this->CHECKSUM_DATABASE = $checksumdb;
         $this->CHECKSUM_TABLE = $checksumtable;
@@ -72,18 +74,24 @@ EOT;
         if ($sql_fragments != null) {
             $sql = $this->sqlPrintF($sql, $sql_fragments);
         }
-        return $this->PDO_LINK->prepare($sql);
+        $stmt= $this->PDO_LINK->prepare($sql);
+        $stmt->server = $this->server;
+        return $stmt;
     }
 
     public function execute(array $params = null) {
-        return $this->PDO_LINK->execute($params);
+        $stmt= $this->PDO_LINK->execute($params);
+        $stmt->server = $this->server;
+        return $stmt;
     }
 
     public function query($sql, array $sql_fragments = null) {
         if ($sql_fragments != null) {
             $sql = $this->sqlPrintF($sql, $sql_fragments);
         }
-        return $this->PDO_LINK->query($sql);
+        $stmt= $this->PDO_LINK->query($sql);
+        $stmt->server = $this->server;
+        return $stmt;
     }
 
     /**
@@ -107,6 +115,7 @@ EOT;
         if (!$this->PDO_LINK) {
             throw new ErrorException('Error connecting to DB');
         }
+        $this->server=$dsn;
         if (isset($connDef->wait_timeout) && intval($connDef->wait_timeout) > 0) {
             $this->PDO_LINK->query('SET wait_timeout ' . intval($connDef->wait_timeout) . ';');
         } else {
