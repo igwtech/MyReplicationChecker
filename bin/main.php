@@ -187,7 +187,7 @@ function main() {
             $masterDB->connectDB($config->master->DSN);
             //Load data from Master
             Logger::notice("Loading data from Master....");
-            $hashers= Synchronizer::createHashers($masterDB,$config);
+            $hashers= Synchronizer::createHashers($masterDB,$config,$parser->getOption('dryrun'));
             foreach($hashers as $hash) {
                 $hash->syncResults();
 		gc_collect_cycles();

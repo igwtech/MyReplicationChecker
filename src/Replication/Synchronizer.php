@@ -19,13 +19,13 @@ class Synchronizer extends Hasher {
     protected $masterdb;
     protected $timeStart;
     protected $dryrun;
-    public static function createHashers($masterDB,$config) {
+    public static function createHashers($masterDB,$config,$dryrun) {
         $hashers=array();
         foreach ($config->slaves->DSN as $dbconfig) {
             $syncher = new Synchronizer($dbconfig, $config->general);
             $syncher->masterdb=$masterDB;
             $syncher->timeStart = microtime(true);
-            $syncher->dryrun = $config->dryrun;
+            $syncher->dryrun = $dryrun;
             $hashers[]=$syncher;   
         }
         
@@ -220,13 +220,13 @@ class Synchronizer extends Hasher {
                 
                 Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtCopy['write']->queryString . " ". var_export($row,true));
                 if(!$this->dryrun) {
-                // if($row !== false ) $this->stmtCopy['write']->execute($row);
+                    if($row !== false ) $this->stmtCopy['write']->execute($row);
                 }
                 
             }elseif($entry['action']==='DELETE') {
                 Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtDelete->queryString . " $keyname=>{$entry['index']} ");
                 if(!$this->dryrun) {
-                // $this->stmtDelete->execute(array($keyname=>$entry['index']));
+                    $this->stmtDelete->execute(array($keyname=>$entry['index']));
                 }
             }
 	    $this->masterdb->query('SELECT 1'); // ping master to keep connection alive
