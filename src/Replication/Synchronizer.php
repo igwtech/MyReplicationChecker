@@ -17,7 +17,7 @@ use \ErrorException;
 class Synchronizer extends Hasher {
     protected $masterdb;
     protected $timeStart;
-
+    protected $dryrun;
     public static function createHashers($masterDB,$config) {
         $hashers=array();
         foreach ($config->slaves->DSN as $dbconfig) {
@@ -26,6 +26,7 @@ class Synchronizer extends Hasher {
             $syncher->timeStart = microtime(true);
             $hashers[]=$syncher;   
         }
+        $this->dryrun = $config->dryrun;
         return $hashers;
     } 
     
@@ -214,11 +215,17 @@ class Synchronizer extends Hasher {
 		
                 $this->stmtCopy['read']->execute(array($keyname=>$entry['index']));
                 $row = $this->stmtCopy['read']->fetch(PDO::FETCH_ASSOC);
+                
+                    Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtCopy['write']->queryString . " ". var_export($row,true));
+                if(!$this->dryrun) {
                 // if($row !== false ) $this->stmtCopy['write']->execute($row);
-                Logger::profiling("SQL : ".$this->stmtCopy['write']->query . " ". var_export($row,true));
+                }
+                
             }elseif($entry['action']==='DELETE') {
+                Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtDelete->query . " $keyname=>{$entry['index']} ");
+                if(!$this->dryrun) {
                 // $this->stmtDelete->execute(array($keyname=>$entry['index']));
-                Logger::profiling("SQL : ".$this->stmtDelete->query . " $keyname=>{$entry['index']} ");
+                }
             }
 	    $this->masterdb->query('SELECT 1'); // pingmaster
 			gc_collect_cycles();
