@@ -114,7 +114,10 @@ class Hasher {
                 $this->HASHER->bindValue(':upper', $bound['upper']);
             }
             $this->HASHER->execute();
-        } catch (Exception $e) {
+        } catch (\PDOException $e) {
+            Logger::error($e->getMessage() . " on server: ".$this->HASHER->server . " ".$e->getTraceAsString());
+            die();
+        }catch (\Exception $e) {
             Logger::error($e);
             die();
         }
@@ -188,7 +191,7 @@ class Hasher {
                 // Small optimization method
                 $this->HASHER = $this->db->prepare(DatabaseAdapter::SQL_CHECKSUM_METHOD1, $params);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Logger::debug($e->getTraceAsString());
             return false;
         }
