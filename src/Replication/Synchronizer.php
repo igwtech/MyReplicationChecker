@@ -184,6 +184,7 @@ class Synchronizer extends Hasher {
             return;
         }
 	if($bound['db'] == 'support') return;
+	if($bound['db'] == 'webedi30') return;
         if($bound['index'] === Hasher::INDEX_LIMIT){
             return;
         }
@@ -219,15 +220,11 @@ class Synchronizer extends Hasher {
                 $row = $this->stmtCopy['read']->fetch(PDO::FETCH_ASSOC);
                 
                 Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtCopy['write']->queryString . " ". var_export($row,true));
-                if(!$this->dryrun) {
                     if($row !== false ) $this->stmtCopy['write']->execute($row);
-                }
                 
             }elseif($entry['action']==='DELETE') {
                 Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtDelete->queryString . " $keyname=>{$entry['index']} ");
-                if(!$this->dryrun) {
                     $this->stmtDelete->execute(array($keyname=>$entry['index']));
-                }
             }
 	    $this->masterdb->query('SELECT 1'); // ping master to keep connection alive
             gc_collect_cycles();
