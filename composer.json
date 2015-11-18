@@ -1,0 +1,22 @@
+{
+    "name": "greicodex/my-replication-checker",
+    "description": "Tool to check and synchronize replications",
+    "require": {
+        "symfony/process": "^2.7",
+        "symfony/finder": "^2.7"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-0": {
+            "Replication\\": "src/"
+        }
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Javier Munoz",
+            "email": "javier@greicodex.com"
+        }
+    ]
+}
