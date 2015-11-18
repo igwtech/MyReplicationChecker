@@ -222,7 +222,7 @@ class Synchronizer extends Hasher {
                 }
                 
             }elseif($entry['action']==='DELETE') {
-                Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtDelete->query . " $keyname=>{$entry['index']} ");
+                Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtDelete->queryString . " $keyname=>{$entry['index']} ");
                 if(!$this->dryrun) {
                 // $this->stmtDelete->execute(array($keyname=>$entry['index']));
                 }
