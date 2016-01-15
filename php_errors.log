@@ -1,8 +1,0 @@
-[18-Nov-2015 00:46:20] PHP Warning:  preg_match(): Compilation failed: unrecognized character after (?< at offset 4 in phar:///home/javier/MyReplicationChecker/myReplicationChecker.phar/src/Replication/OptionParser.php on line 108
-[18-Nov-2015 00:46:20] PHP Warning:  preg_match(): Compilation failed: unrecognized character after (?< at offset 7 in phar:///home/javier/MyReplicationChecker/myReplicationChecker.phar/src/Replication/OptionParser.php on line 111
-[18-Nov-2015 00:46:20] PHP Warning:  preg_match(): Compilation failed: unrecognized character after (?< at offset 4 in phar:///home/javier/MyReplicationChecker/myReplicationChecker.phar/src/Replication/OptionParser.php on line 118
-[18-Nov-2015 00:49:02] PHP Warning:  require_once(/home/javier/MyReplicationChecker/src/../vendor/autoload.php): failed to open stream: No such file or directory in /home/javier/MyReplicationChecker/src/bootstrap.php on line 8
-[18-Nov-2015 00:49:02] PHP Fatal error:  require_once(): Failed opening required '/home/javier/MyReplicationChecker/src/../vendor/autoload.php' (include_path='.:/usr/share/pear:/usr/share/php') in /home/javier/MyReplicationChecker/src/bootstrap.php on line 8
-[18-Nov-2015 00:56:21] PHP Warning:  preg_match(): Compilation failed: unrecognized character after (?< at offset 4 in /home/javier/MyReplicationChecker/src/Replication/OptionParser.php on line 108
-[18-Nov-2015 00:56:21] PHP Warning:  preg_match(): Compilation failed: unrecognized character after (?< at offset 7 in /home/javier/MyReplicationChecker/src/Replication/OptionParser.php on line 111
-[18-Nov-2015 00:56:21] PHP Warning:  preg_match(): Compilation failed: unrecognized character after (?< at offset 4 in /home/javier/MyReplicationChecker/src/Replication/OptionParser.php on line 118

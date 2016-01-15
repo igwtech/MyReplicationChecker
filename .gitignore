@@ -1,3 +1,5 @@
 /nbproject/private/
 config.ini
 /vendor/
+*.log
+*.phar

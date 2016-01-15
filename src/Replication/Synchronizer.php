@@ -119,7 +119,7 @@ class Synchronizer extends Hasher {
     }
     
     public function syncResults() {
-        ini_set('memory_limit','128M');
+        ini_set('memory_limit','1024M');
         $this->db->report_query->execute();
         if (false === ($results = $this->db->report_query->fetchAll(PDO::FETCH_ASSOC))) {
             Logger::notice("******** Error while retrieving Results ********\n");
@@ -130,6 +130,7 @@ class Synchronizer extends Hasher {
             
             $i=0;
             foreach($results as $chunkData) {
+		Logger::notice("db={$chunkData['db']}&tbl={$chunkData['tbl']}&chunk={$chunkData['chunk_index']}");
                 $chunkData['index']=$chunkData['chunk_index'] ;
                 $chunkData['upper']=$chunkData['upper_boundary'] ;
                 $chunkData['lower']=$chunkData['lower_boundary'] ;
@@ -180,11 +181,6 @@ class Synchronizer extends Hasher {
         if (in_array("{$bound['db']}.{$bound['tbl']}", $this->ignore_tables)) {
             return;
         }
-        if(in_array("{$bound['db']}.{$bound['tbl']}",array('support.group_user'))){
-            return;
-        }
-	if($bound['db'] == 'support') return;
-	
         if($bound['index'] === Hasher::INDEX_LIMIT){
             return;
         }
@@ -239,7 +235,7 @@ class Synchronizer extends Hasher {
     }
    
     /**
-	* Runs the OS diff tool between the temporary files to get the different rows.
+	* Calculates a  diff between the temporary files to get the different rows.
 	**/ 
     public function calculateDiff($master,$slave) {
         $output=array();
