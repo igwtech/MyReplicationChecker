@@ -19,7 +19,7 @@ class Synchronizer extends Hasher {
     protected $masterdb;
     protected $timeStart;
     protected $dryrun;
-    public static function createHashers($masterDB,$config,$dryrun) {
+    public static function createHashers($masterDB,$config,$dryrun=false) {
         $hashers=array();
         foreach ($config->slaves->DSN as $dbconfig) {
             $syncher = new Synchronizer($dbconfig, $config->general);
@@ -184,7 +184,7 @@ class Synchronizer extends Hasher {
             return;
         }
 	if($bound['db'] == 'support') return;
-	if($bound['db'] == 'webedi30') return;
+	
         if($bound['index'] === Hasher::INDEX_LIMIT){
             return;
         }
@@ -220,11 +220,15 @@ class Synchronizer extends Hasher {
                 $row = $this->stmtCopy['read']->fetch(PDO::FETCH_ASSOC);
                 
                 Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtCopy['write']->queryString . " ". var_export($row,true));
+                if($this->dryrun !== false) {
                     if($row !== false ) $this->stmtCopy['write']->execute($row);
+                }
                 
             }elseif($entry['action']==='DELETE') {
                 Logger::profiling("Server: ".$this->stmtCopy['write']->server ." SQL : ".$this->stmtDelete->queryString . " $keyname=>{$entry['index']} ");
+                if($this->dryrun !== false) {
                     $this->stmtDelete->execute(array($keyname=>$entry['index']));
+                }
             }
 	    $this->masterdb->query('SELECT 1'); // ping master to keep connection alive
             gc_collect_cycles();
