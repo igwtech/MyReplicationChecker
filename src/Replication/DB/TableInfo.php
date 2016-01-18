@@ -107,16 +107,25 @@ class TableInfo {
         }, $cols);
     }
 
-    public function getPrimaryKeys($onlyAutoIncrement=false) {
+    protected function getKeyColumns($onlyAutoIncrement=false) {
         $cols = $this->getColumns();
         return array_map(function($o) {
             return ($o['COLUMN_NAME']);
         }, array_filter($cols, function($o) use ($onlyAutoIncrement){
-                    if($onlyAutoIncrement) {
-                        return ($o['EXTRA'] == "auto_increment");
-                    }
-                    return ($o['COLUMN_KEY'] == "PRI");
-                }));
+                if($onlyAutoIncrement) {
+                    return ($o['EXTRA'] == "auto_increment");
+                }
+                return ($o['COLUMN_KEY'] == "PRI");
+            }));
+    }
+    public function getPrimaryKeys() {
+        $keys = $this->getKeyColumns();
+        $keys2 = $this->getKeyColumns(true);
+        if(count($keys2)==1) {
+            return $keys2;
+        }else{
+            return $keys;
+        }
     }
     
 
