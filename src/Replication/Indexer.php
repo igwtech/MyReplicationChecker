@@ -383,6 +383,7 @@ class Indexer {
 
     function transferResults($masterConfig, $slaveConfig) {
         $command = 'mysqldump';
+        $strout='';
         if ($masterConfig->username) {
             $command.=' -u' . $masterConfig->username;
         }
