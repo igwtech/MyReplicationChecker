@@ -19,7 +19,7 @@ class DatabaseAdapter {
     private $PREPARED_STATEMENTS;
 
     const SCHEMA_TABLES_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,ENGINE,TABLE_ROWS,TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA=:schema";
-    const SCHEMA_COLUMNS_QUERY = "SELECT COLUMN_NAME,DATA_TYPE,IS_NULLABLE,COLUMN_DEFAULT,CHARACTER_MAXIMUM_LENGTH,COLUMN_TYPE,COLUMN_KEY,COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:schema";
+    const SCHEMA_COLUMNS_QUERY = "SELECT COLUMN_NAME,DATA_TYPE,IS_NULLABLE,COLUMN_DEFAULT,CHARACTER_MAXIMUM_LENGTH,COLUMN_TYPE,COLUMN_KEY,EXTRA,COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:schema";
     // SQL Constants
     const SQL_STORE_MASTER_RESULT = "REPLACE INTO `:CHECKSUM_DATABASE`.`:CHECKSUM_TABLE`(`db`,`tbl`,`chunk`,`chunk_time`,`chunk_index`,`lower_boundary`,`upper_boundary`,`this_crc`,`this_cnt`,`master_crc`,`master_cnt`,`ts`) VALUES (:db,:tbl,:chunk,:time,:index,:lower,:upper,:crc,:cnt,:crc,:cnt,:ts);";
     const SQL_STORE_SLAVE_RESULT = "UPDATE `:CHECKSUM_DATABASE`.`:CHECKSUM_TABLE` SET `chunk_time`=:time,`this_crc`=:crc,`this_cnt`=:cnt,`ts`=:ts WHERE `db`=:db AND `tbl`=:tbl AND `chunk`=:chunk";

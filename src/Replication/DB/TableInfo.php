@@ -107,14 +107,18 @@ class TableInfo {
         }, $cols);
     }
 
-    public function getPrimaryKeys() {
+    public function getPrimaryKeys($onlyAutoIncrement=false) {
         $cols = $this->getColumns();
         return array_map(function($o) {
             return ($o['COLUMN_NAME']);
-        }, array_filter($cols, function($o) {
+        }, array_filter($cols, function($o) use ($onlyAutoIncrement){
+                    if($onlyAutoIncrement) {
+                        return ($o['EXTRA'] == "auto_increment");
+                    }
                     return ($o['COLUMN_KEY'] == "PRI");
                 }));
     }
+    
 
     public function getFullName($quoted = true) {
         if ($quoted) {

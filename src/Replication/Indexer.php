@@ -140,10 +140,16 @@ class Indexer {
     function indexTable($table, &$arr_bound) {
         // Initialize values for Master process
         $keys = $table->getPrimaryKeys();
+        if(count($keys) >1 ){
+            $auto = $table->getAutoIncrement();
+            if(count($auto) == 1) {
+                $keys=$auto;
+            }
+        }
         $rowcount = intval($table->getRowCount());
         $page_size = $this->getPageSize($rowcount);
         Logger::notice('Calculating Boundaries (chunk_size: ' . $page_size . ')...');
-        if (count($keys) == 1) {
+        if (count($keys) == 1 ) {
             $arr_bound = $this->getBoundsPK($table->getFullName(), $keys, $rowcount, $page_size, $arr_bound);
         } else {
             $arr_bound = $this->getBoundsLimit($table->getFullName(), $rowcount, $page_size, $arr_bound);
